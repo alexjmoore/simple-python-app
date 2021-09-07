@@ -11,14 +11,12 @@ metadata_url = "http://metadata.google.internal/computeMetadata/v1"
 
 @app.route('/')
 def index():
-    project_id = queryMetadata("/project/project-id")
     instance_id = queryMetadata("/instance/id")
     instance_name = queryMetadata("/instance/name")
     instance_hostname = queryMetadata("/instance/hostname")
 
     return render_template(
         'index.jinja',
-        project_id=project_id,
         instance_hostname=instance_hostname,
         instance_id=instance_id,
         instance_name=instance_name,
