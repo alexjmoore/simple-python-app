@@ -13,7 +13,7 @@ metadata_url = "http://metadata.google.internal/computeMetadata/v1"
 def index():
     instance_id = queryMetadata("/instance/id")
     instance_name = queryMetadata("/instance/name")
-    instance_zone = queryMetadata("/instance/zone")
+    instance_zone = queryMetadata("/instance/zone").rsplit('/', 1)[1]
 
     return render_template(
         'index.jinja',
