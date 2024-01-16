@@ -1,5 +1,6 @@
 import logging
 from os import environ
+from socket import gethostname
 from waitress import serve
 from flask import Flask, render_template
 from urllib.request import Request, urlopen
@@ -9,18 +10,41 @@ app = Flask(__name__)
 
 metadata_url = "http://metadata.google.internal/computeMetadata/v1"
 
+# index
 @app.route('/')
 def index():
-    instance_id = queryMetadata("/instance/id")
-    instance_name = queryMetadata("/instance/name")
-    instance_zone = queryMetadata("/instance/zone").rsplit('/', 1)[1]
+    cloud = False
+    environment = ""
+    instance_id = ""
+    instance_name = ""
+    instance_zone = ""
+
+    if "GAE_APPLICATION" in environ:
+        environment="Running on Google App Engine!"
+    elif environ.get('K_SERVICE'):
+        environment="Running on Cloud Run!"
+    elif gethostname().endswith('.internal'):
+        environment="Running on Google Compute Engine!"
+    else:
+        environment="Not running on Google Cloud (or cannot be determined)!"
+
+    if cloud:
+        instance_id = queryMetadata("/instance/id")
+        instance_name = queryMetadata("/instance/name")
+        instance_zone = queryMetadata("/instance/zone").rsplit('/', 1)[1]
 
     return render_template(
         'index.jinja',
+        environment=environment,
         instance_id=instance_id,
         instance_name=instance_name,
         instance_zone=instance_zone,
     )
+
+# helper function - generates the requested status code
+@app.route('/status/<code>')
+def status(code):
+    return ("Returned HTTP Status Code: " + code, code)
 
 def queryMetadata(attribute):
     req = Request(metadata_url + attribute)
