@@ -1,4 +1,5 @@
 import logging
+import socket
 from os import environ
 from waitress import serve
 from flask import Flask, render_template, request
@@ -58,13 +59,11 @@ def queryMetadata(attribute):
     
 def is_on_gce():
     try:
-        response = requests.get(
-            "http://metadata.google.internal/computeMetadata/v1/instance/hostname",
-            headers={"Metadata-Flavor": "Google"}
-        )
-        return response.status_code == 200  # Successful response
-    except requests.exceptions.RequestException:
-        return False  # Probably not on GCE
+        socket.getaddrinfo('metadata.google.internal', 80)
+    except socket.gaierror:
+        return False
+    return True
+
 
 if __name__ == "__main__":
     logging.getLogger('waitress').setLevel(logging.DEBUG)
