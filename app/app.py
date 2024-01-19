@@ -13,6 +13,7 @@ metadata_url = "http://metadata.google.internal/computeMetadata/v1"
 # index
 @app.route('/')
 def index():
+    app.logger.info(f"Request for / for {request.remote_addr} with {request.headers.get('User-Agent')}")
     cloud = True
     environment = ""
     instance_id = ""
