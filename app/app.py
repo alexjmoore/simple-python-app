@@ -26,7 +26,7 @@ def index():
     elif is_on_gce():
         environment = "Running on Google Compute Engine!"
     else:
-        environment="Not running on Google Cloud (or cannot be determined)!"
+        environment = "Not running on Google Cloud (or cannot be determined)!"
         cloud = False
 
     if cloud:
@@ -45,7 +45,7 @@ def index():
 # helper function - generates the requested status code
 @app.route('/status/<code>')
 def status(code):
-    logging.debug(f"Returning HTTP Status Code: {code} for {request.remote_addr} with {request.headers.get('User-Agent')}")
+    app.logger.info(f"Returning HTTP Status Code: {code} for {request.remote_addr} with {request.headers.get('User-Agent')}")
     return ("Returned HTTP Status Code: " + code, code)
 
 def queryMetadata(attribute):
