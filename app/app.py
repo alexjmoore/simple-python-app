@@ -13,22 +13,21 @@ metadata_url = "http://metadata.google.internal/computeMetadata/v1"
 # index
 @app.route('/')
 def index():
-    cloud = False
+    cloud = True
     environment = ""
     instance_id = ""
     instance_name = ""
     instance_zone = ""
 
-
-
     if "GAE_APPLICATION" in environ:
-        environment="Running on Google App Engine!"
+        environment = "Running on Google App Engine!"
     elif environ.get('K_SERVICE'):
-        environment="Running on Cloud Run!"
+        environment = "Running on Cloud Run!"
     elif is_on_gce():
-        environment="Running on Google Compute Engine!"
+        environment = "Running on Google Compute Engine!"
     else:
         environment="Not running on Google Cloud (or cannot be determined)!"
+        cloud = False
 
     if cloud:
         instance_id = queryMetadata("/instance/id")
