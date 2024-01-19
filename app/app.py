@@ -66,4 +66,5 @@ def is_on_gce():
 
 if __name__ == "__main__":
     logging.getLogger('waitress').setLevel(logging.DEBUG)
+    app.logger.setLevel(logging.DEBUG)
     serve(app, host='0.0.0.0', port=environ.get('PORT', '8080'))
